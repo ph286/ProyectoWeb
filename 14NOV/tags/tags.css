@@ -1,0 +1,11 @@
+.tag{
+	background-color: orange;
+	padding:5px;
+	display: flex;
+	height: 15px;
+	border-radius: 8px;
+    align-items: center;
+    float:left;
+    color: white;
+    margin: 5px;
+}
