@@ -162,21 +162,21 @@
       $id_carrera = 5;
    }
    //--------------------------------------
-   if (strcmp($carrera, "motivado") == 0) {
+   if (strcmp($etiquetas, "motivado") == 0) {
       $id_etiqueta = 1;
-   } elseif (strcmp($carrera, "amoroso") == 0) {
+   } elseif (strcmp($etiquetas, "amoroso") == 0) {
       $id_etiqueta = 2;
-   } elseif (strcmp($carrera, "grosero") == 0) {
+   } elseif (strcmp($etiquetas, "grosero") == 0) {
       $id_etiqueta = 3;
-   } elseif (strcmp($carrera, "flojo") == 0) {
+   } elseif (strcmp($etiquetas, "flojo") == 0) {
       $id_etiqueta = 4;
-   } elseif (strcmp($carrera, "deshonesto") == 0) {
+   } elseif (strcmp($etiquetas, "deshonesto") == 0) {
       $id_etiqueta = 5;
-   } elseif (strcmp($carrera, "estudioso") == 0) {
+   } elseif (strcmp($etiquetas, "estudioso") == 0) {
       $id_etiqueta = 6;
-   } elseif (strcmp($carrera, "responsable") == 0) {
+   } elseif (strcmp($etiquetas, "responsable") == 0) {
       $id_etiqueta = 7;
-   } elseif (strcmp($carrera, "puntual") == 0) {
+   } elseif (strcmp($etiquetas, "puntual") == 0) {
       $id_etiqueta = 8;
    }
    $sql = "INSERT INTO alumnos (alumno_id, carrera_id, nombre_alumno) VALUES ($matricula, $id_carrera, '$nombre');
