@@ -82,12 +82,16 @@ $carreras = [
                 <!-- Left links -->
 
                 <div class="d-flex align-items-center">
-                    <button type="button" class="btn btn-link px-3 me-2">
-                        Iniciar sesión
-                    </button>
-                    <button type="button" class="btn btn-primary me-3">
-                        Registrarse
-                    </button>
+                    <a href="./src/login.php">
+                        <button type="button" class="btn btn-link px-3 me-2">
+                            Iniciar sesión
+                        </button>
+                    </a>
+                    <a href="./src/sign_in.php">
+                        <button type="button" class="btn btn-primary me-3">
+                            Registrarse
+                        </button>
+                    </a>
                 </div>
             </div>
             <!-- Collapsible wrapper -->
