@@ -87,31 +87,34 @@
         <!-- Container wrapper -->
     </nav>
 
+    <br><br>
     <div class="cardGroup">
         <div class="container">
             <div class="row row-cols-2 row-cols-md-5 g-4">
                 <?php foreach ($carreras as $carrera) : ?>
                     <div class="Card">
-                        <br>
-                        <h5 class="card-title"><?= $carrera["nombre"] ?></h5>
-                        <br>
-                        <figure>
-                            <img src=<?= $carrera["imgPath"] ?>>
-                        </figure>
-                        <div class="contenido">
-                            <h6 class="card-subtitle mb-2 text-muted">Mejores calificados</h6>
-                            <div class="row">
-                                <div class="name">
-                                    <p>JUAN RUEDA</p>
+                        <a class="text-decoration-none" href="src/carrera.php?carrera=<?=$carrera["nombre"]?>">
+                            <br>
+                            <h5 class="card-title text-dark"><?= $carrera["nombre"] ?></h5>
+                            <br>
+                            <figure>
+                                <img src="<?= $carrera["imgPath"] ?>" alt="<?= $carrera["nombre"] ?>">
+                            </figure>
+                            <div class="contenido">
+                                <h6 class="card-subtitle mb-2 text-muted">Mejores calificados</h6>
+                                <div class="row">
+                                    <div class="name">
+                                        <p class="text-dark">JUAN RUEDA</p>
+                                    </div>
+                                    <div class="tags">
+                                        <span class="badge rounded-pill bg-warning text-dark">#Proactivo</span>
+                                        <span class="badge rounded-pill bg-warning text-dark">#Creativo</span>
+                                        <span class="badge rounded-pill bg-warning text-dark">#Ordenado</span>
+                                    </div>
+                                    <br><br>
                                 </div>
-                                <div class="tags">
-                                    <span class="badge rounded-pill bg-warning text-dark">#Proactivo</span>
-                                    <span class="badge rounded-pill bg-warning text-dark">#Creativo</span>
-                                    <span class="badge rounded-pill bg-warning text-dark">#Ordenado</span>
-                                </div>
-                                <br><br>
                             </div>
-                        </div>
+                        </a>
                     </div>
                 <?php endforeach; ?>
             </div>
