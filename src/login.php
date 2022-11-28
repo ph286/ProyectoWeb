@@ -1,8 +1,50 @@
-<html>
+<?php
+
+    session_start();
+
+    if (isset($_SESSION['id'])){
+        header("Location: ../");
+    }
+
+    $error = 0;
+    $email = "";
+    $password = "";
+
+    $isTryingToLogIn = isset($_POST['email']) && isset($_POST['password']);
+
+    if ($isTryingToLogIn) {
+
+        $mysqli = new mysqli('localhost', 'root', '', 'funator');
+
+        $email = $_POST['email'];
+        $password = $_POST['password'];
+
+        $getIdQuery = "SELECT * FROM `cuentas` WHERE `email` = '$email' AND `password` = '$password'";
+
+        try {
+            $queryResult = mysqli_query($mysqli, $getIdQuery);
+            $user = mysqli_fetch_row($queryResult);
+
+            if (isset($user[0])) {
+                $_SESSION['id'] = $user[0];
+                $_SESSION['email'] = $email;
+                $_SESSION['type'] = $user[3];
+                header("Location: ../");
+            } else {
+                $error = 1;
+            }
+
+        } catch (mysqli_sql_exception $e) {
+            $error = $e->getCode();
+        }
+    }
+?>
+
+<html lang="es">
 
 <head>
   <meta charset="UTF-8">
-  <title>Inicio de sesion</title>
+  <title>Funator - Inicio de sesión</title>
   <!-- JavaScript Bootstrap -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-OERcA2EqjJCMA+/3y+gxIOqMEjwtxJY7qPCqsdltbNJuaOe923+mo//f6V8Qbsw3" crossorigin="anonymous"></script>
   <!-- CSS Bootstrap -->
@@ -12,42 +54,23 @@
 
 <body>
 
-  <!-- Navbar -->
+
   <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-    <!-- Container wrapper -->
     <div class="container">
-      <!-- Navbar brand -->
-      <a class="navbar-brand" href="index.php">
-        <img src="../assets/Funator.png" class="me-2" height="50" alt="Funator Logo" loading="lazy" />
-      </a>
-
-      <!-- Toggle button -->
-      <button class="navbar-toggler" type="button" data-mdb-toggle="collapse" data-mdb-target="#navbarButtonsExample" aria-controls="navbarButtonsExample" aria-expanded="false" aria-label="Toggle navigation">
-        <i class="fas fa-bars"></i>
-      </button>
-
-      <!-- Collapsible wrapper -->
-      <div class="collapse navbar-collapse" id="navbarButtonsExample">
-        <!-- Left links -->
-        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-          <li class="nav-item">
-            <a class="nav-link" href="index.php">Dashboard</a>
-          </li>
-        </ul>
-        <!-- Left links -->
-
-        <div class="d-flex align-items-center">
-          <button type="button" class="btn btn-link px-3 me-2">
-            Iniciar sesión
-          </button>
-          <button type="button" class="btn btn-primary me-3">
-            Registrarse
-          </button>
+        <div>
+            <a class="navbar-brand" href="../funator.php">
+                <img src="../assets/Funator.png" class="me-2" height="50" alt="Funator Logo" loading="lazy"/>
+            </a>
         </div>
-      </div>
-      <!-- Collapsible wrapper -->
+
+        <div>
+            <a href="sign_in.php">
+                <button type="button" class="btn btn-primary me-3">
+                    Registrarse
+                </button>
+            </a>
+        </div>
     </div>
-    <!-- Container wrapper -->
   </nav>
   <section class="vh-100 gradient-custom">
     <div class="container py-5 h-100">
@@ -58,35 +81,42 @@
 
               <div class="mb-md-5 mt-md-4 pb-5">
 
-                <h2 class="fw-bold mb-2 text-uppercase">Evaluación de alumnos</h2>
-                <p class="text-white-50 mb-5">Iniciar sesión como profesor</p>
+                <h2 class="fw-bold mb-2 text-uppercase">Inicia sesión</h2>
 
-                <form action="index.php" method="post">
+                <form action="login.php" method="post">
                   <div class="form-outline form-white mb-4">
-                    <input type="text" id="user" name="user" class="form-control form-control-lg" />
-                    <label class="form-label" for="user">Usuario</label>
+                      <label class="form-label" for="email">Email</label>
+                      <input type="email" id="email" name="email" class="form-control form-control-lg
+                        <?php if($error != 0): ?>
+                            is-invalid"
+                        <?php endif?>
+                             value="<?= $email?>"
+                      />
                   </div>
 
                   <div class="form-outline form-white mb-4">
-                    <input type="password" id="password" name="pass" class="form-control form-control-lg" />
-                    <label class="form-label" for="password" value="contraseña">Contraseña</label>
+                      <label class="form-label" for="password" value="contraseña">Contraseña</label>
+                      <input type="password" id="password" name="password" class="form-control form-control-lg
+                        <?php if($error != 0): ?>
+                            is-invalid"
+                        <?php endif?>
+                        value="<?= $password?>"
+                      />
+                      <?php if($error != 0): ?>
+                          <div class="invalid-feedback">
+                              Correo y/o contraseña invalidos
+                          </div>
+                      <?php endif?>
                   </div>
-
                   <button class="btn btn-outline-light btn-lg px-5" type="submit">Iniciar sesión</button>
                 </form>
-
-
               </div>
-
             </div>
           </div>
         </div>
       </div>
     </div>
   </section>
-  <?php
-  // put your code here
-  ?>
 </body>
 
 </html>
