@@ -60,7 +60,7 @@
     ?>
 <div class="container">
         <div class="Card" style="background-color: #2F6ED4">
-            <a class="text-decoration-none" href="carrera.php?alumno=<?=$alumno[0]?>">
+            <a class="text-decoration-none" href="alumno.php?alumno=<?=$alumno[0]?>">
             <div class="left">
                 <h4 class="text-black">PROMEDIO</h4>
                 <h1 class="text-black"><?= $alumno[2] ?></h1>

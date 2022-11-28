@@ -1,0 +1,72 @@
+body{
+	font-family: 'Inter';
+	background-color: rgb(34, 49, 81);
+}
+.container{
+	width: 100%;
+	display: flex;
+	max-width: 1100px;
+}
+.UPL{
+    
+    width: 46%;
+    padding: 2%;
+    float:left;
+}
+.UPR{
+    
+    width: 46%;
+    padding: 2%;
+    float:left;
+}
+.tags{
+    
+    width: 96%;
+    padding: 2%;
+}
+.comment{
+    
+    clear: both;
+    width: 96%;
+    padding: 1%;
+    margin: 1%;
+    border: 1px solid;
+}
+
+.Card{
+	width: 100%;
+	margin: 20px;
+	border-radius: 6px;
+	overflow: hidden;
+	background-color: rgb(59, 83, 135);
+	box-shadow: 0px 1px 10px rgba(0,0,0,0.2);
+	cursor: default;
+	transition: all 400ms ease;
+
+
+}
+.Card:hover{
+	box-shadow: 5px 5px 20px rgba(0,0,0,0.4);
+	transform: translateY(-3%);
+}
+
+
+
+.tags{
+	float: left;
+}
+.tag{
+	background-color: orange;
+	padding:5px;
+	display: flex;
+	height: 15px;
+	border-radius: 8px;
+    align-items: center;
+    float:left;
+    color: white;
+    margin: 5px;
+}
+.tag:hover{
+	background-color: green;
+	color: white;
+}
