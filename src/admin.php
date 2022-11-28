@@ -1,4 +1,12 @@
-<?php?>
+<?php
+    session_start();
+
+    if (!isset($_SESSION["id"])) header("Location: ../");
+
+    $isAdmin = $_SESSION["type"] == "admin";
+
+    if (!$isAdmin) header("Location: ../");
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>

@@ -4,6 +4,10 @@
 
     $isLogIn = isset($_SESSION["id"]);
 
+    if ($isLogIn && $_SESSION["type"] != "user") {
+        header("Location: ./");
+    }
+
     $mysqli = new mysqli('localhost', 'root', '', 'funator');
     $carrerasQuery = "SELECT `nombre_carrera` FROM `carreras`";
 
