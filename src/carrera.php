@@ -47,7 +47,7 @@
         <h2 class="flex-grow-1 px-lg-5 my-4"><?=$carrera?></h2>
         <?php if($isLogIn) : ?>
         <a href="formulario.php">
-            <button type="button" class="btn btn-primary px-3 me-2 my-4" style="background-color: #2e2b70; stroke-width: 0">
+            <button type="button" class="btn btn-primary px-3 me-2 my-4" style="background-color: #2e2b70">
                 Comentar otro alumno
             </button>
         </a>

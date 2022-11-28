@@ -13,6 +13,8 @@
     $alumnoQuery = "SELECT * FROM `alumnos` WHERE `alumno_id` = '$alumnoId'";
     $alumnoData = mysqli_fetch_array(mysqli_query($mysqli,$alumnoQuery));
 
+    if ($alumnoData == null) header("Location: ../");
+
     $comentariosQuery = "SELECT `comentario_id`,`materia_id` FROM `info_comentarios` WHERE `alumno_id` = '$alumnoId'";
     $todosComentarios = mysqli_query($mysqli, $comentariosQuery);
 ?>
@@ -38,6 +40,18 @@
         </a>
     </div>
 </nav>
+
+<div class="d-flex">
+    <h2 class="flex-grow-1 px-lg-5 my-4"><?=$alumnoData["nombre_alumno"]?></h2>
+    <?php if($isLogIn) : ?>
+        <a href="formulario.php">
+            <button type="button" class="btn btn-primary px-3 me-2 my-4" style="background-color: #472FD4">
+                Hacer un comentario
+            </button>
+        </a>
+    <?php endif ?>
+</div>
+
 <?php while ($comentario = mysqli_fetch_array($todosComentarios)): ?>
     <?php
 
