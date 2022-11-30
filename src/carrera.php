@@ -46,11 +46,11 @@
     <div class="d-flex">
         <h2 class="flex-grow-1 px-lg-5 my-4"><?=$carrera?></h2>
         <?php if($isLogIn) : ?>
-        <a href="formulario.php">
-            <button type="button" class="btn btn-primary px-3 me-2 my-4" style="background-color: #2e2b70">
+        <form action="formulario.php" method="post">
+            <button name="carrera_id" value="<?=$carrera_id?>" type="submit" class="btn btn-primary px-3 me-2 my-4" style="background-color: #2e2b70">
                 Comentar otro alumno
             </button>
-        </a>
+        </form>
         <?php endif ?>
     </div>
 <?php while ($alumno = mysqli_fetch_array($result)): ?>

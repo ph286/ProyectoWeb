@@ -44,11 +44,11 @@
 <div class="d-flex">
     <h2 class="flex-grow-1 px-lg-5 my-4"><?=$alumnoData["nombre_alumno"]?></h2>
     <?php if($isLogIn) : ?>
-        <a href="formulario.php">
-            <button type="button" class="btn btn-primary px-3 me-2 my-4" style="background-color: #472FD4">
+        <form action="formulario.php" method="post">
+            <button name="alumno_id" value="<?=$alumnoId?>" type="submit" class="btn btn-primary px-3 me-2 my-4" style="background-color: #472FD4">
                 Hacer un comentario
             </button>
-        </a>
+        </form>
     <?php endif ?>
 </div>
 
