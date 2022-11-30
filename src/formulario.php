@@ -140,7 +140,7 @@
                        <div>
                            <label class="pb-2" for="inputNombre">Nombre del alumno</label>
                            <input type="text" class="form-control" id="inputNombre" name="nombre" placeholder="Nombre completo">
-                           <div class="invalid-feedback">Los nombres no pueden estar vacíos y solo se admiten letras</div>
+                           <div class="invalid-feedback" id="nameFeedback"></div>
                        </div>
                    <?php endif?>
 
@@ -217,15 +217,26 @@
    </section>
    <script>
 
-       document.getElementById("sendButton").addEventListener("click", () => {
+       let isUnique = false
+
+       document.getElementById("sendButton").addEventListener("click", async () => {
            let correctNombre = validateNombre()
            let correctComentario = validateComentario()
            let correctCalificacion = validateCalificacion()
 
            if (correctNombre && correctComentario && correctCalificacion) {
+               <?php if(isset($_POST["alumno_id"])):?>
                crearNuevoComentario()
+               <?php else:?>
+               validateUniqueStudent()
+               <?php endif?>
            }
        })
+
+       function removeNameFeedback() {
+           let nameInput = document.getElementById("inputNombre")
+           nameInput.classList.remove("is-invalid")
+       }
 
        function validateNombre() {
            <?php if(!isset($alumnoId)) :?>
@@ -240,6 +251,7 @@
                nombreInput.value = nombre
                nombreInput.classList.remove("is-invalid")
            } else {
+               document.getElementById("nameFeedback").textContent = "Los nombres no pueden estar vacíos y solo se admiten letras"
                nombreInput.classList.add("is-invalid")
            }
 
@@ -281,6 +293,41 @@
            }
 
            return !isInvalid
+       }
+
+       function validateUniqueStudent() {
+           leerNombre()
+           leerCarrera()
+
+           let data = {
+               "nombre": nombre,
+               "carreraID": carreraID
+           }
+
+           $.ajax({
+               data: data,
+               url: './validateUniqueStudent.php',
+               type: 'post',
+               success:  function (response) {
+                   isUnique = response === "true";
+                   console.log(isUnique)
+                   if (isUnique) {
+                       crearNuevoComentario()
+                   } else {
+                       updateNameFeedback()
+                   }
+               },
+               error: function () {
+                   isUnique = false;
+               }
+           });
+       }
+
+       function updateNameFeedback() {
+           let nameInput = document.getElementById("inputNombre")
+           nameInput.classList.add("is-invalid")
+           let nameFeedback = document.getElementById("nameFeedback")
+           nameFeedback.textContent = nombre + " ya existe en esta carrera"
        }
 
        let nombre
