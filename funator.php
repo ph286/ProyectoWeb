@@ -27,6 +27,8 @@
         $carreras[$indice] = $carrera;
     }
 
+    $bestStudentsQuery = "SELECT a.alumno_id, a.nombre_alumno, a.carrera_id FROM alumnos a WHERE a.promedio = (SELECT MAX(promedio) FROM alumnos b WHERE a.carrera_id = b.carrera_id) ORDER BY a.carrera_id";
+    $bestStudentsResult = mysqli_query($mysqli, $bestStudentsQuery);
 ?>
 
 <!DOCTYPE html>
@@ -92,6 +94,14 @@
         <div class="container">
             <div class="row row-cols-2 row-cols-md-5 g-4">
                 <?php foreach ($carreras as $carrera) : ?>
+                    <?php
+                        try {
+                            $student = mysqli_fetch_array($bestStudentsResult);
+                            $studentLabelsQuery = "SELECT nombre_etiqueta FROM etiquetas JOIN etiquetas_alumnos ON etiquetas.etiqueta_id = etiquetas_alumnos.etiqueta_id WHERE etiquetas_alumnos.alumno_id = " . $student["alumno_id"];
+
+                            $studentLabelsResult = mysqli_query($mysqli, $studentLabelsQuery);
+                        } catch (mysqli_sql_exception $e) {}
+                    ?>
                     <div class="Card">
                         <a class="text-decoration-none" href="src/carrera.php?carrera=<?=$carrera["nombre"]?>">
                             <br>
@@ -101,15 +111,17 @@
                                 <img src="<?= $carrera["imgPath"] ?>" alt="<?= $carrera["nombre"] ?>">
                             </figure>
                             <div class="contenido">
-                                <h6 class="card-subtitle mb-2 text-muted">Mejores calificados</h6>
+                                <h6 class="card-subtitle mb-2 text-muted">Mejor calificado</h6>
                                 <div class="row">
                                     <div class="name">
-                                        <p class="text-dark">JUAN RUEDA</p>
+                                        <p class="text-dark"><?=$student["nombre_alumno"]?></p>
                                     </div>
                                     <div class="tags">
-                                        <span class="badge rounded-pill bg-warning text-dark">#Proactivo</span>
-                                        <span class="badge rounded-pill bg-warning text-dark">#Creativo</span>
-                                        <span class="badge rounded-pill bg-warning text-dark">#Ordenado</span>
+                                        <?php try {?>
+                                        <?php while($label = mysqli_fetch_array($studentLabelsResult)):?>
+                                            <span class="badge rounded-pill bg-warning text-dark"><?=$label["nombre_etiqueta"]?></span>
+                                        <?php endwhile?>
+                                        <?php } catch(mysqli_sql_exception $e){}?>
                                     </div>
                                     <br><br>
                                 </div>
