@@ -57,6 +57,9 @@
     <?php
         $countComentariosQuery = "SELECT count(`alumno_id`) FROM `info_comentarios` WHERE `alumno_id` = ".$alumno[0];
         $numeroComentarios = mysqli_fetch_array(mysqli_query($mysqli, $countComentariosQuery))[0];
+
+        $etiquetasQuery = "SELECT etiquetas.nombre_etiqueta FROM etiquetas INNER JOIN etiquetas_alumnos ON etiquetas_alumnos.etiqueta_id = etiquetas.etiqueta_id WHERE etiquetas_alumnos.alumno_id = ".$alumno[0];
+        $nombreEtiquetas = mysqli_query($mysqli, $etiquetasQuery);
     ?>
 <div class="container">
         <div class="Card" style="background-color: #2F6ED4">
@@ -71,7 +74,11 @@
             </div>
             <div class="right">
                 <h3 class="text-black"><?= strtoupper($alumno[1]) ?></h3>
-                <h3><span class="text-white badge rounded-pill text-bg-warning">Proactivo</span></h3>
+                <div class="d-flex flex-row flex-wrap">
+                <?php while ($etiqueta = mysqli_fetch_array($nombreEtiquetas)) :?>
+                    <h3><span class="pt-1 px-3 pb-1 mx-1 text-white badge rounded-pill text-bg-warning"><?=$etiqueta[0]?></span></h3>
+                <?php endwhile?>
+                </div>
             </div>
             </a>
         </div>
