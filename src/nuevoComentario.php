@@ -40,12 +40,9 @@
         mysqli_query($mysqli, $updatePromedioQuery);
     }
 
-    $createComentario = "INSERT INTO comentarios (semestre, comentario, calificacion) VALUES ('$semestre', '$comentario', '$calificacion')";
-
+    $comentarioId = date_create()->getTimestamp();
+    $createComentario = "INSERT INTO comentarios (comentario_id, semestre, comentario, calificacion) VALUES ('$comentarioId','$semestre', '$comentario', '$calificacion')";
     mysqli_query($mysqli, $createComentario);
-    $fechaDeCreacion = date_create('now', new DateTimeZone('America/Merida'));
-    $comentarioIDQuery = "SELECT comentario_id FROM comentarios WHERE fecha_creacion > '".date_format($fechaDeCreacion, "Y-m-d H:i:S")."'";
-    $comentarioId = mysqli_fetch_row(mysqli_query($mysqli,$comentarioIDQuery))[0];
 
     $createInfoComentario = "INSERT INTO info_comentarios (comentario_id, cuenta_id, alumno_id, materia_id) VALUES ('$comentarioId', '$cuentaId', '$alumnoID', '$materiaId')";
     mysqli_query($mysqli, $createInfoComentario);
