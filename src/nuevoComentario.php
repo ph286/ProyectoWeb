@@ -54,6 +54,8 @@
             $insertEtiquetasAlumno = "INSERT INTO etiquetas_alumnos (etiqueta_id, alumno_id) VALUES ('$etiqueta', '$alumnoID')";
 
             mysqli_query($mysqli, $createEtiquetasComentario);
-            mysqli_query($mysqli, $insertEtiquetasAlumno);
+            try {
+                mysqli_query($mysqli, $insertEtiquetasAlumno);
+            } catch (mysqli_sql_exception $exception){}
         }
     }

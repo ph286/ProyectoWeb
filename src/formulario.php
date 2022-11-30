@@ -165,7 +165,7 @@
                        <label class="pb-2" for="inputMateria">Materia</label>
                        <select class="form-control" id="inputMateria" name="materia">
                            <?php foreach ($infoMaterias as $row):?>
-                               <option value="<?= $materia[0]?>"><?=$row[1]?></option>
+                               <option value="<?= $row[0]?>"><?=$row[1]?></option>
                            <?php endforeach?>
                        </select>
                    </div>
