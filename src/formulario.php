@@ -217,24 +217,6 @@
    </section>
    <script>
 
-       function validateCalificacion() {
-           let inputCalificacion = document.getElementById("inputCalificacion")
-           let calificacion = parseInt(inputCalificacion.value)
-
-           let isLower0 = calificacion < 0
-           let isHigher100 = calificacion > 100
-           let isInvalid = isNaN(calificacion) || isLower0 || isHigher100
-
-           if (isInvalid) {
-               inputCalificacion.classList.add("is-invalid")
-           } else {
-               inputCalificacion.classList.remove("is-invalid")
-               inputCalificacion.value = calificacion.toString()
-           }
-
-           return !isInvalid
-       }
-
        document.getElementById("sendButton").addEventListener("click", () => {
            let correctNombre = validateNombre()
            let correctComentario = validateComentario()
@@ -243,7 +225,7 @@
            if (correctNombre && correctComentario && correctCalificacion) {
                crearNuevoComentario()
            }
-       }, false)
+       })
 
        function validateNombre() {
            <?php if(!isset($alumnoId)) :?>
@@ -283,51 +265,36 @@
            return !isEmpty
        }
 
+       function validateCalificacion() {
+           let inputCalificacion = document.getElementById("inputCalificacion")
+           let calificacion = parseInt(inputCalificacion.value)
 
+           let isLower0 = calificacion < 0
+           let isHigher100 = calificacion > 100
+           let isInvalid = isNaN(calificacion) || isLower0 || isHigher100
+
+           if (isInvalid) {
+               inputCalificacion.classList.add("is-invalid")
+           } else {
+               inputCalificacion.classList.remove("is-invalid")
+               inputCalificacion.value = calificacion.toString()
+           }
+
+           return !isInvalid
+       }
+
+       let nombre
+       let carreraID
+       let materiaID
+       let semestre
+       let year
+       let etiquetasID
+       let comentario
+       let calificacion
 
        function crearNuevoComentario(){
 
-           let nombre
-
-           <?php if (isset($_POST["alumno_id"])): ?>
-           nombre = "<?=$nombreAlumno?>"
-           <?php else:?>
-           nombre = document.getElementById("inputNombre").value
-           <?php endif?>
-
-           let selectSemestre = document.getElementById("inputSemestre")
-           let semestreItem = selectSemestre.options[selectSemestre.selectedIndex]
-
-           let semestre = semestreItem.value
-
-           let selectYear = document.getElementById("inputYear")
-           let yearItem = selectYear.options[selectYear.selectedIndex]
-
-           let year = yearItem.value
-
-           let carreraID;
-
-           <?php if(isset($_POST["carrera_id"])):?>
-           carreraID = document.getElementById("inputCarrera").value
-           <?php else: ?>
-           carreraID = <?=$carreraId?>
-           <?php endif?>
-
-           let selectMateria = document.getElementById("inputMateria")
-           let materiaItem = selectMateria.options[selectMateria.selectedIndex]
-           let materiaID = materiaItem.value
-
-           let etiquetasID = []
-
-           infoEtiquetas.forEach(etiqueta => {
-               if (etiqueta[1]) {
-                   etiquetasID.push(infoEtiquetas.indexOf(etiqueta))
-               }
-           })
-
-           let comentario = document.getElementById("comentarios").value
-
-           let calificacion = document.getElementById("inputCalificacion").value
+           leerDatos()
 
            let datos = {
                <?php if (isset($_POST["alumno_id"])): ?>
@@ -342,8 +309,6 @@
                "materiaID": materiaID
            }
 
-           console.log(datos)
-
            $.ajax({
                data: datos,
                url: './nuevoComentario.php',
@@ -355,6 +320,68 @@
                    console.log(error);
                }
            });
+       }
+
+       function leerDatos() {
+           leerNombre()
+           leerCarrera()
+           leerMateria()
+           leerSemestre()
+           leerEtiquetas()
+           leerComentario()
+           leerCalificacion()
+       }
+
+       function leerNombre(){
+           <?php if (isset($_POST["alumno_id"])): ?>
+           nombre = "<?=$nombreAlumno?>"
+           <?php else:?>
+           nombre = document.getElementById("inputNombre").value
+           <?php endif?>
+       }
+
+       function leerCarrera(){
+           <?php if(isset($_POST["carrera_id"])):?>
+           carreraID = document.getElementById("inputCarrera").value
+           <?php else: ?>
+           carreraID = <?=$carreraId?>
+           <?php endif?>
+       }
+
+       function leerSemestre() {
+           let selectSemestre = document.getElementById("inputSemestre")
+           let semestreItem = selectSemestre.options[selectSemestre.selectedIndex]
+
+           semestre = semestreItem.value
+
+           let selectYear = document.getElementById("inputYear")
+           let yearItem = selectYear.options[selectYear.selectedIndex]
+
+           year = yearItem.value
+       }
+
+       function leerMateria() {
+           let selectMateria = document.getElementById("inputMateria")
+           let materiaItem = selectMateria.options[selectMateria.selectedIndex]
+           materiaID = materiaItem.value
+       }
+
+       function leerEtiquetas() {
+           etiquetasID = []
+
+           infoEtiquetas.forEach(etiqueta => {
+               if (etiqueta[1]) {
+                   etiquetasID.push(infoEtiquetas.indexOf(etiqueta))
+               }
+           })
+       }
+
+       function leerComentario() {
+           comentario = document.getElementById("comentarios").value
+       }
+
+       function leerCalificacion() {
+           calificacion = document.getElementById("inputCalificacion").value
        }
    </script>
 </body>
