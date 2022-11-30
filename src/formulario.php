@@ -20,11 +20,44 @@
         header("Location: ../");
     }
 
-    $carreraQuery = "SELECT `nombre_carrera` FROM `carreras` WHERE carrera_id = ".$carreraId;
+    $carrerasQuery = "SELECT * FROM `carreras`";
+    $carrerasResultado = mysqli_query($mysqli,$carrerasQuery);
+    $infoCarreras = [];
 
-    $nombreCarrera = mysqli_fetch_array(mysqli_query($mysqli,$carreraQuery))["nombre_carrera"];
+    while ($carrera = mysqli_fetch_array($carrerasResultado)) {
+        $infoCarreras[] = array(
+            $carrera[0],
+            $carrera[1]
+        );
 
-    $etiquetasElegidas = [];
+        if ($carreraId == $carrera[0]){
+            $nombreCarrera = $carrera[1];
+        }
+    }
+
+    $etiquetasQuery = "SELECT * FROM etiquetas";
+    $etiquetasResultado = mysqli_query($mysqli, $etiquetasQuery);
+
+    $infoEtiquetas = [];
+
+    while ($etiqueta = mysqli_fetch_array($etiquetasResultado)) {
+        $infoEtiquetas[] = array(
+            $etiqueta[0],
+            $etiqueta[1],
+            false
+        );
+    }
+
+    $materiasQuery = "SELECT * FROM materias";
+    $materiasResultado = mysqli_query($mysqli, $materiasQuery);
+
+    $infoMaterias = [];
+    while ($materia = mysqli_fetch_array($materiasResultado)) {
+        $infoMaterias[] = array(
+                $materia[0],
+            $materia[1]
+        );
+    }
 ?>
 <!DOCTYPE html>
 <html lang="es">
@@ -42,6 +75,38 @@
            background-color: #2e2b70;
        }
    </style>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.0/jquery.min.js"></script>
+    <script>
+
+        let infoEtiquetas = [];
+
+        <?php foreach ($infoEtiquetas as $etiqueta) :?>
+            infoEtiquetas[<?=$etiqueta[0]?>] = [
+                "<?=$etiqueta[1]?>",
+                false
+            ]
+        <?php endforeach?>
+
+        function selectEtiqueta(index) {
+            let isSelected = infoEtiquetas[index][1]
+            infoEtiquetas[index][1] = !isSelected
+            let id = "etiqueta" + index;
+
+            let button = document.getElementById(id)
+
+            if (isSelected) {
+                button.classList.remove("text-bg-success")
+                button.classList.add("text-bg-warning")
+                button.classList.remove("text-white")
+                button.classList.add("text-dark")
+            } else {
+                button.classList.remove("text-bg-warning")
+                button.classList.add("text-bg-success")
+                button.classList.remove("text-dark")
+                button.classList.add("text-white")
+            }
+        }
+    </script>
 </head>
 
 <body>
@@ -62,10 +127,7 @@
          <div class="col-12 col-md-8 col-lg-6 col-xl-5 py-5">
             <div class="card bg-dark text-white" style="border-radius: 1rem;">
                <div class="card-body pb-5 pe-5 ps-5">
-
-                  <div class="mb-md-5 mt-md-4 pb-5">
-
-                     <h2 class="fw-bold mb-2 text-uppercase text-center">
+                   <h2 class="fw-bold pt-3 mb-2 text-uppercase text-center">
                          Evalúa a
                          <?php if (isset($alumnoId)):?>
                             <?= $nombreAlumno?>
@@ -73,133 +135,228 @@
                             tu compañero
                          <?php endif?>
                      </h2>
-                     <hr class="hr" />
+                   <hr class="hr" />
+                   <?php if (!isset($alumnoId)):?>
+                       <div>
+                           <label class="pb-2" for="inputNombre">Nombre del alumno</label>
+                           <input type="text" class="form-control" id="inputNombre" name="nombre" placeholder="Nombre completo">
+                           <div class="invalid-feedback">Los nombres no pueden estar vacíos y solo se admiten letras</div>
+                       </div>
+                   <?php endif?>
 
-                     <form method="post" action="formulario.php">
+                   <div class="form-group pt-3">
+                       <?php if (isset($alumnoId)): ?>
+                           <label class="pb-2" for="inputCarrera">Carrera: <?= $nombreCarrera?></label>
+                       <?php else: ?>
+                           <label class="pb-2" for="inputCarrera">Carrera</label>
+                           <select class="form-control" id="inputCarrera" name="carrera">
+                               <?php foreach ($infoCarreras as $row):?>
+                                   <option value="<?= $row[0]?>"
+                                       <?php if($row[1] == $nombreCarrera):?>
+                                           selected
+                                       <?php endif?>
+                                   ><?=$row[1]?></option>
+                               <?php endforeach?>
+                           </select>
+                       <?php endif ?>
+                   </div>
 
-                         <?php if (!isset($alumnoId)):?>
-                             <input type="text" class="form-control" id="inputNombre" name="nombre" placeholder="Nombre completo">
-                         <?php endif?>
-                         <label class="pb-1">Semestre</label>
-                        <div class="d-flex flex-row">
-                            <select class="w-auto form-control me-1" id="inputSemestre" name="semestre">
-                                <option value=1>Ago-Dic</option>
-                                <option value=2>Ene-May</option>
-                                <option value=3>Verano</option>
-                            </select>
-                            <select class="w-auto form-control ms-1" id="inputYear" name="year">
-                                <option value=1>2022</option>
-                                <option value=2>2021</option>
-                                <option value=3>2020</option>
-                            </select>
-                        </div>
-                         <hr class="hr" />
-                        <div class="form-group">
-                            <?php if (isset($alumnoId)): ?>
-                                <label for="inputCarrera">Carrera: <?= $nombreCarrera?></label>
-                            <?php else: ?>
-                                <label for="inputCarrera">Carrera</label>
-                                <select class="form-control" id="inputCarrera" name="carrera">
-                                    <?php
-                                    $carreritasQuery = "SELECT nombre_carrera FROM carreras";
-                                    $carreritas = mysqli_query($mysqli, $carreritasQuery);
-                                    while ($row = mysqli_fetch_array($carreritas)):?>
-                                        <option value="<?= $row["nombre_carrera"]?>"><?=$row[0]?></option>
-                                    <?php endwhile?>
-                                </select>
-                            </div>
-                            <?php endif ?>
-                        </div>
+                   <div class="form-group pt-3">
+                       <label class="pb-2" for="inputMateria">Materia</label>
+                       <select class="form-control" id="inputMateria" name="materia">
+                           <?php foreach ($infoMaterias as $row):?>
+                               <option value="<?= $materia[0]?>"><?=$row[1]?></option>
+                           <?php endforeach?>
+                       </select>
+                   </div>
 
-                        <div class="form-group">
-                           <label for="inputEtiquetas">Etiquetas</label>
-                           <div class="d-flex flex-row flex-wrap">
-                              <?php
-                              $etiquetitas = mysqli_query($mysqli, "SELECT * FROM etiquetas");
-                              while ($row = mysqli_fetch_array($etiquetitas)) :?>
-                                  <button id="etiqueta<?=$row[0]?>" class="m-1 align-content-center text-white rounded-pill border-0 text-bg-warning"><?=$row["nombre_etiqueta"]?></button>
-                                <script>
-                                    document.getElementById("etiqueta<?=$row[0]?>").onclick(function () {
-                                        <?php
-                                            $etiquetasElegidas[] = $row[0];
-                                            var_dump($etiquetasElegidas);
-                                        ?>
-                                    })
-                                </script>
-                              <?php endwhile?>
-                           </div>
-                        </div>
-                        <div class="form-group">
-                           <label for="comentarios">Comentarios sobre el alumno</label>
-                           <textarea class="form-control" id="comentarios" name="comentarios" rows="3"></textarea>
-                        </div>
+                   <label class="pt-3 pb-2" for="inputSemestre">Semestre</label>
+                   <div class="d-flex flex-row">
+                       <select class="w-auto form-control me-1" id="inputSemestre" name="semestre">
+                           <option value="Ago-Dic">Ago-Dic</option>
+                           <option value="Ene-May">Ene-May</option>
+                           <option value="Verano">Verano</option>
+                       </select>
+                       <label for="inputYear"></label>
+                       <select class="w-auto form-control ms-1" id="inputYear" name="year">
+                           <option value=2022>2022</option>
+                           <option value=2021>2021</option>
+                           <option value=2020>2020</option>
+                       </select>
+                   </div>
 
-                        <div class="form-row">
-                           <div class="form-group col-md-6">
-                              <label for="inputCalificacion">Calificación</label>
-                              <input type="text" class="form-control" id="inputCalificacion" name="calificacion" placeholder="Calificación">
-                           </div>
-                        </div>
-                        <br>
-                        <button type="submit" class="btn btn-primary">Enviar</button>
-                     </form>
-                  </div>
+                   <div class="form-group pt-3">
+                       <label class="pb-2" for="inputEtiquetas">Etiquetas</label>
+                       <div class="d-flex flex-row flex-wrap">
+                           <?php foreach ($infoEtiquetas as $etiqueta) :?>
+                               <button id="etiqueta<?=$etiqueta[0]?>" onclick="selectEtiqueta(<?=$etiqueta[0]?>)" class="m-1 rounded-pill pt-1 px-3 pb-1 text-dark border-0 text-bg-warning"><?=$etiqueta[1]?></button>
+                           <?php endforeach?>
+                       </div>
+                   </div>
+
+                   <div class="form-group pt-3">
+                       <label class="pb-2" for="comentarios">Comentarios sobre el alumno</label>
+                       <textarea class="form-control" id="comentarios" name="comentarios" rows="3"></textarea>
+                       <div class="invalid-feedback">Debes hacer un comentario</div>
+                   </div>
+
+                   <div class="form-row">
+                       <div class="form-group col-md-6 pt-3">
+                           <label class="pb-2" for="inputCalificacion">Calificación</label>
+                           <input type="number" inputmode="numeric" pattern="\d*" class="form-control" id="inputCalificacion" min="0" max="100" name="calificacion" placeholder="Calificación">
+                           <div class="invalid-feedback">Ingresa un valor entre 0 y 100</div>
+                       </div>
+                   </div>
+
+                   <br>
+                   <button id="sendButton" name="sendButton" type="submit" class="btn btn-primary">Enviar</button>
                </div>
             </div>
          </div>
-
+      </div>
    </section>
-   <?php
-   $nombre = $_POST["nombre"];
-   $semestre = $_POST["semestre"];
-   $matricula = $_POST["matricula"];
-   $carrera = $_POST["carrera"];
-   $etiquetas = $_POST["etiquetas"];
-   $comentario = $_POST["comentarios"];
-   $calificacion = $_POST["calificacion"];
-   //-------------------------------------
-   $lis = "Ingenieria de software";
-   $lem = "Enseñanza de las matemáticas";
-   $lcc = "Ciencias de la computación";
-   $lic = "Ingeniería en computación";
-   $lm = "Matemáticas";
-   //-------------------------------------
-   if (strcmp($carrera, $lis) == 0) {
-      $id_carrera = 1;
-   } elseif (strcmp($carrera, $lem) == 0) {
-      $id_carrera = 2;
-   } elseif (strcmp($carrera, $lcc) == 0) {
-      $id_carrera = 3;
-   } elseif (strcmp($carrera, $lic) == 0) {
-      $id_carrera = 4;
-   } elseif (strcmp($carrera, $lm) == 0) {
-      $id_carrera = 5;
-   }
-   //--------------------------------------
-   if (strcmp($etiquetas, "motivado") == 0) {
-      $id_etiqueta = 1;
-   } elseif (strcmp($etiquetas, "amoroso") == 0) {
-      $id_etiqueta = 2;
-   } elseif (strcmp($etiquetas, "grosero") == 0) {
-      $id_etiqueta = 3;
-   } elseif (strcmp($etiquetas, "flojo") == 0) {
-      $id_etiqueta = 4;
-   } elseif (strcmp($etiquetas, "deshonesto") == 0) {
-      $id_etiqueta = 5;
-   } elseif (strcmp($etiquetas, "estudioso") == 0) {
-      $id_etiqueta = 6;
-   } elseif (strcmp($etiquetas, "responsable") == 0) {
-      $id_etiqueta = 7;
-   } elseif (strcmp($etiquetas, "puntual") == 0) {
-      $id_etiqueta = 8;
-   }
-   $sql = "INSERT INTO alumnos (alumno_id, carrera_id, nombre_alumno) VALUES ($matricula, $id_carrera, '$nombre');
-   INSERT INTO comentarios (semestre, comentario, calificacion) VALUES ('$semestre', '$comentario', $calificacion);
-   INSERT INTO etiquetas_alumnos (etiqueta_id, alumno_id) VALUES ($id_etiqueta,$matricula);";
-   //INSERT INTO info_comentarios(comentario_id, cuenta_id, alumno_id) VALUES ($comentario_id,$cuenta_id,$matricula); //Este es el query que faltaría ya que todavía no se han creado los tipos de cuentas y falta meterle el comentario_id
+   <script>
 
-   $mysqli->multi_query($sql);
-   ?>
+       function validateCalificacion() {
+           let inputCalificacion = document.getElementById("inputCalificacion")
+           let calificacion = parseInt(inputCalificacion.value)
+
+           let isLower0 = calificacion < 0
+           let isHigher100 = calificacion > 100
+           let isInvalid = isNaN(calificacion) || isLower0 || isHigher100
+
+           if (isInvalid) {
+               inputCalificacion.classList.add("is-invalid")
+           } else {
+               inputCalificacion.classList.remove("is-invalid")
+               inputCalificacion.value = calificacion.toString()
+           }
+
+           return !isInvalid
+       }
+
+       document.getElementById("sendButton").addEventListener("click", () => {
+           let correctNombre = validateNombre()
+           let correctComentario = validateComentario()
+           let correctCalificacion = validateCalificacion()
+
+           if (correctNombre && correctComentario && correctCalificacion) {
+               crearNuevoComentario()
+           }
+       }, false)
+
+       function validateNombre() {
+           <?php if(!isset($alumnoId)) :?>
+           let nombreInput = document.getElementById("inputNombre")
+           let nombre = nombreInput.value.trim()
+
+           const pattern = new RegExp(/^[A-Za-z\s]+$/g)
+
+           let isValidName = nombre !== "" && pattern.test(nombre)
+
+           if (isValidName) {
+               nombreInput.value = nombre
+               nombreInput.classList.remove("is-invalid")
+           } else {
+               nombreInput.classList.add("is-invalid")
+           }
+
+           return isValidName
+           <?php else:?>
+           return true
+           <?php endif?>
+       }
+
+       function validateComentario() {
+           let comentarioInput = document.getElementById("comentarios")
+           let comentario = comentarioInput.value.trim()
+
+           let isEmpty = comentario === ""
+
+           if (isEmpty) {
+               comentarioInput.classList.add("is-invalid")
+           } else {
+               comentarioInput.value = comentario
+               comentarioInput.classList.remove("is-invalid")
+           }
+
+           return !isEmpty
+       }
+
+
+
+       function crearNuevoComentario(){
+
+           let nombre
+
+           <?php if (isset($_POST["alumno_id"])): ?>
+           nombre = "<?=$nombreAlumno?>"
+           <?php else:?>
+           nombre = document.getElementById("inputNombre").value
+           <?php endif?>
+
+           let selectSemestre = document.getElementById("inputSemestre")
+           let semestreItem = selectSemestre.options[selectSemestre.selectedIndex]
+
+           let semestre = semestreItem.value
+
+           let selectYear = document.getElementById("inputYear")
+           let yearItem = selectYear.options[selectYear.selectedIndex]
+
+           let year = yearItem.value
+
+           let carreraID;
+
+           <?php if(isset($_POST["carrera_id"])):?>
+           carreraID = document.getElementById("inputCarrera").value
+           <?php else: ?>
+           carreraID = <?=$carreraId?>
+           <?php endif?>
+
+           let selectMateria = document.getElementById("inputMateria")
+           let materiaItem = selectMateria.options[selectMateria.selectedIndex]
+           let materiaID = materiaItem.value
+
+           let etiquetasID = []
+
+           infoEtiquetas.forEach(etiqueta => {
+               if (etiqueta[1]) {
+                   etiquetasID.push(infoEtiquetas.indexOf(etiqueta))
+               }
+           })
+
+           let comentario = document.getElementById("comentarios").value
+
+           let calificacion = document.getElementById("inputCalificacion").value
+
+           let datos = {
+               <?php if (isset($_POST["alumno_id"])): ?>
+               "alumno_id": <?=$alumnoId?>,
+               <?php endif?>
+               "nombre": nombre,
+               "semestre": semestre + " " + year,
+               "carreraID": carreraID,
+               "etiquetas" : etiquetasID,
+               "comentario" : comentario,
+               "calificacion": calificacion,
+               "materiaID": materiaID
+           }
+
+           console.log(datos)
+
+           $.ajax({
+               data: datos,
+               url: './nuevoComentario.php',
+               type: 'post',
+               success:  function (response) {
+                   console.log(response);
+               },
+               error: function (error) {
+                   console.log(error);
+               }
+           });
+       }
+   </script>
 </body>
 
 </html>
