@@ -1,5 +1,9 @@
 <?php
 
+    session_start();
+
+    if (!isset($_SESSION["id"]) || $_POST["type"] != "user") header("Location: ../");
+
     if (isset($_POST["nombre"]) && isset($_POST["carreraID"])) {
         $name = $_POST["nombre"];
         $carreraID = $_POST["carreraID"];

@@ -2,6 +2,8 @@
 
     session_start();
 
+    if (!isset($_SESSION["id"]) || $_POST["type"] != "user") header("Location: ../");
+
     $cuentaId = $_SESSION["id"];
 
     $nombre = $_POST["nombre"];
