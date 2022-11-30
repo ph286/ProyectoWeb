@@ -61,3 +61,5 @@
             } catch (mysqli_sql_exception $exception){}
         }
     }
+
+    echo $alumnoID;

@@ -362,6 +362,7 @@
                type: 'post',
                success:  function (response) {
                    console.log(response);
+                   window.location.href = "./alumno.php?alumno=" + response;
                },
                error: function (error) {
                    console.log(error);
