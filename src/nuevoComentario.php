@@ -21,6 +21,21 @@
         $alumnoID = mysqli_fetch_row(mysqli_query($mysqli, $userIdQuery))[0];
     } else {
         $alumnoID = $_POST["alumno_id"];
+
+        $calificacionesQuery = "SELECT comentarios.calificacion FROM info_comentarios INNER JOIN comentarios ON info_comentarios.comentario_id = comentarios.comentario_id WHERE info_comentarios.alumno_id = '$alumnoID'";
+        $calificacionesResult = mysqli_query($mysqli, $calificacionesQuery);
+
+        $promedio = $calificacion;
+        $cantidad = 1;
+        while ($resultado = mysqli_fetch_array($calificacionesResult)) {
+            $promedio += $resultado[0];
+            $cantidad++;
+        }
+
+        $promedio /= $cantidad;
+
+        $updatePromedioQuery = "UPDATE alumnos SET promedio = '$promedio' WHERE alumno_id = '$alumnoID'";
+        mysqli_query($mysqli, $updatePromedioQuery);
     }
 
     $createComentario = "INSERT INTO comentarios (semestre, comentario, calificacion) VALUES ('$semestre', '$comentario', '$calificacion')";
